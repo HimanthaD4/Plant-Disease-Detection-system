@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0px;
+            text-align: center;
+        }
+        .container {
+            background-color: #ffffff;
+            margin: 20px auto;
+            padding: 20px 20px;
+
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 900px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .result {
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .detail {
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid;
+            background-color: #eef7f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .healthy-bg {
+            background-color: #e9f9e8;
+            border-color: #4CAF50;
+        }
+        .disease-bg {
+            background-color: #ffe8e9;
+            border-color: #F44336;
+        }
+        .detail h2, .result p.label {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        .detail h2 i, .result p.label i {
+            margin-right: 10px;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .label {
+            font-weight: bold;
+            color: #000000;
+        }
+        .header {
+            background-color: #028C7F;
+            color: #fff;
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .nav li {
+            margin: 0 15px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .nav a:hover {
+            color: #044d50;
+        }
+
+            </style>
+        </head>
+        <body>
+        <div class="header">
+            <ul class="nav">
+                <li><a href="{{ url_for('upload_file') }} " style="font-size:large;  font-family: 'Roboto', sans-serif;">Home</a></li>
+                <li><a href="{{ url_for('about_us') }}" style="font-size:large;  font-family: 'Roboto', sans-serif;" >About Us</a></li>
+                <li><a href="{{ url_for('vision') }}" style="font-size:large;  font-family: 'Roboto', sans-serif;">Our Vision</a></li>
+            </ul>
+        </div>
+        <div class="container" id="container" style="margin-top: 6%">
+            <div class="result" id="result" style="background-color: #f5f5f5">
+                <p class="label" id="labelIcon"></p>
+                <p id="diseaseName" style="font-weight: bolder; font-size: 20px"></p>
+            </div>
+            <div class="detail" id="detail1">
+                <h2></h2>
+                <p id="diseaseCause"></p>
+            </div>
+            <div class="detail" id="detail2">
+                <h2></h2>
+                <p id="diseaseSolution"></p>
+            </div>
+        </div>
+
+        <script>
+            const diseasesInfo = {
+                "Grape black rot": {
+                    cause: "Grape black rot is a fungal disease caused by Guignardia bidwellii, which primarily affects grapevines. This fungus prefers warm and humid climates, making vineyards in such regions particularly vulnerable. The disease manifests as dark, sunken lesions on grapes and leaves, which can rapidly spread, leading to significant crop loss. The fungus overwinters in infected plant debris and is capable of infecting new growth in the spring, making early detection and management critical.",
+                    solution: "Managing grape black rot involves a combination of cultural practices and chemical treatments. Early in the growing season, it's essential to prune and destroy any infected grapevines to reduce the spread of the fungus. Implementing good sanitation practices, such as removing fallen leaves and fruit, can also help minimize the disease's impact. Fungicides play a crucial role in preventing black rot, especially in regions where the disease is prevalent. Applying fungicides at key times, such as before flowering and after fruit set, can protect the vineyard. Ensuring adequate air circulation around the plants by spacing vines properly   Continuation from aboveand controlling weed growth can also reduce humidity levels around the grapevines, making the environment less conducive to the fungus."
+                },
+                "Grape esca ( black measles )": {
+                    cause: "Grape esca, or 'black measles', is a disease that affects grapevines. It is caused by several types of fungi, including Phaeomoniella chlamydospora and Phaeoacremonium minimum. These fungi attack the vine, leading to dark spots on grapes and striped patterns on leaves, which can cause the plant to weaken and die. The disease often enters the plant through cuts made during pruning, which shows how important it is to take care when cutting vines.",
+                    solution: "To deal with grape esca, vineyard owners need to use a mix of careful practices and treatments. One important step is to treat cuts on vines with special protective chemicals right after pruning to keep the fungi out. Cleaning up and getting rid of sick parts of plants can also stop the disease from spreading. While there aren't many chemicals that can fight the disease directly, keeping the vines healthy by managing water, nutrients, and soil well can make them stronger against esca. Researchers are also working on developing new types of grapevines that won't get as sick from esca, which could help a lot in the future."
+                },
+                 "Healthy": {
+                cause: "Congratulations! Your plants are displaying the epitome of health. This remarkable state indicates an optimal harmony within the ecosystem you've created for them. Your plants are not just surviving; they are thriving. They exhibit robust growth, vibrant foliage, and an overall vitality that speaks volumes about your nurturing touch. The absence of diseases or pests is a testament to the meticulous care and attention you've provided. It's a reflection of the nurturing environment you've cultivated, where your plants are free to reach their full potential without hindrance.",
+                solution: "To perpetuate this flourishing condition, it's imperative to uphold your meticulous care regimen. Your plants are relying on you to maintain their sanctuary of well-being. Keep a watchful eye on their needs and respond with unwavering dedication. Ensure they receive the precise amount of water they require, neither too much nor too little. Introduce them to a balanced diet through appropriate fertilization, enriching the soil with the nutrients they crave. Embrace the sunlight as their life force, positioning them to bask in its warmth and energy. Remain vigilant in your surveillance, detecting any subtle deviations from their norm. Address any concerns promptly, with the same fervor you've displayed in their nurturing journey. Your commitment to their well-being is the cornerstone of their continued prosperity."
+                     },
+
+                "Grape leaf blight ( Isariopsis leaf pot )": {
+                    cause: "Grape leaf blight, also known as Isariopsis leaf spot, is a disease that affects grapevines. It's caused by a fungus called Isariopsis clavispora. This disease leads to the appearance of large, dark spots or blots on the leaves of the grapevine. These spots are usually gray or brown and can cause the leaves to wither and fall off. The disease thrives in warm, humid conditions, which help the fungus grow and spread. If not controlled, it can weaken the grapevine, reducing the yield and quality of the grapes.",
+                    solution: "To deal with grape leaf blight, also known as Isariopsis leaf spot, it's important to follow a few key steps. First, make sure to keep the area around the grapevines clean by removing any dead leaves or debris. This helps reduce the amount of fungus that can infect the plants. It's also a good idea to prune the vines to improve air flow and reduce humidity around the leaves, making it harder for the fungus to grow. If the disease is severe, applying fungicides that are specifically recommended for grape leaf blight can help control the spread. Always remember to follow the instructions carefully when using any chemical treatments. Additionally, choosing grapevine varieties that are resistant to this disease can offer long-term protection.",
+                },
+
+                "Orange haunglongbing ( citrus greening )":{
+                    cause: "Orange Huanglongbing (HLB), also known as citrus greening, is caused by a bacterium named Candidatus Liberibacter. This bacterium is primarily spread by a small insect called the Asian citrus psyllid. The psyllid feeds on citrus tree leaves and, in the process, transfers the bacteria from infected trees to healthy ones. Once infected, the trees show symptoms like yellowing of leaves, misshapen and bitter fruits, and eventually, the disease can lead to the death of the tree. The disease affects not only orange trees but also a wide range of citrus plants, making it a significant concern for citrus growers worldwide",
+                    solution: "To fight against Orange Huanglongbing (citrus greening), it's important to take several steps. First, controlling the Asian citrus psyllid, the insect that spreads the disease, is key. This can be done using insecticides or by introducing natural predators of the psyllid into the environment. Regularly inspecting citrus trees for signs of the disease and the psyllid can help catch infestations early. If a tree is infected, it's usually recommended to remove and destroy it to prevent the disease from spreading to healthy trees. Planting citrus trees that are resistant to Huanglongbing, if available, can also be a good preventive measure. Lastly, keeping trees healthy through proper care, like fertilization and watering, can make them less vulnerable to infection.",
+                },
+                "Potato early blight":{
+                    cause: "Potato early blight is caused by a fungus called Alternaria solani. This fungus attacks the leaves of the potato plants, creating dark spots surrounded by concentric rings, which can look a bit like a target. The disease usually happens in warm, wet weather, which helps the fungus grow and spread. If not managed, it can lead to the leaves drying up and falling off, reducing the amount of potatoes the plant can produce.",
+                    solution: "To tackle potato early blight, it's a good idea to start with planting potato varieties known to resist the disease if you can find them. Also, make sure not to plant potatoes or their relatives in the exact same spot year after year; rotating where you plant them every three to four years helps cut down the fungus waiting in the soil. Space out your potato plants properly to ensure they have plenty of air flowing around them, which helps keep their leaves dry and less inviting to the fungus. When watering, try to pour water near the base of the plants rather than over them, and do this in the morning so any water that gets on the leaves can dry out during the day. If you notice any leaves or plants that look infected, remove and destroy them to stop the disease from spreading. At the end of the growing season, clear away all potato debris to reduce the chance of the fungus surviving until next year. Applying fungicides early on, following the instructions carefully, can also help protect your potatoes from early blight."
+                },
+                "Potato late blight":{
+                    cause: "Potato late blight is a disease caused by a microorganism called Phytophthora infestans. This disease is famous for causing the Irish Potato Famine in the 1840s. It attacks potato plants, making their leaves, stems, and even the potatoes themselves rot with dark, mushy spots. Late blight loves cool, moist weather and can spread quickly in these conditions, wiping out entire fields in a short time. To prevent it, farmers can use specific fungicides, grow resistant potato varieties, and make sure not to plant potatoes too close together, allowing good air flow. Also, it's important to destroy any infected plants and avoid watering from above to keep the leaves as dry as possible.",
+                    solution:"Managing potato late blight involves a proactive approach focused on prevention and quick action. Using resistant varieties of potatoes can significantly reduce the risk of blight. Implementing crop rotation and avoiding planting potatoes in the same soil year after year also helps minimize the presence of the disease. Good garden hygiene, such as removing and destroying any infected plants or debris, is crucial to prevent the spread. Fungicides can be effective, especially when applied at the first sign of disease, following the product's instructions carefully. Ensuring plants are well-spaced promotes better air circulation, reducing the humidity that encourages blight. Additionally, watering the plants at their base rather than from above can help keep the foliage dry and less susceptible to infection.",
+                },
+                "Strawberry leaf scorch":{
+                    cause: "Strawberry leaf scorch is caused by the fungus Diplocarpon earlianum. This fungus attacks the leaves of the strawberry plant, leading to the appearance of small, purple spots that eventually turn brown or red and may look scorched by fire, hence the name. The disease thrives in warm, humid conditions, which allow it to spread rapidly from leaf to leaf and plant to plant. As the infection progresses, the leaves can wither and die, which can significantly weaken the plant by reducing its ability to photosynthesize. If left unchecked, leaf scorch can reduce the yield and quality of the strawberries, making it a concern for growers",
+                    solution:"To manage strawberry leaf scorch, it's essential to adopt a combination of cultural and chemical strategies. Start by selecting resistant strawberry varieties and ensure good air circulation by spacing plants properly and controlling weeds. Regularly inspect plants for early signs of the disease and remove any infected leaves to prevent spread. Using drip irrigation instead of overhead watering can keep foliage dry and reduce the conditions leaf scorch fungi thrive in. In areas where leaf scorch is a recurrent problem, applying fungicides according to recommended guidelines can offer protection, especially when applied at the first signs of disease. Maintaining clean fields by removing plant debris at the end of the growing season can also help minimize the fungus's presence and protect future crops."
+                },
+                "Tomato bacterial spot":{
+                    cause: "Tomato bacterial spot is caused by a group of bacteria known as Xanthomonas spp. These bacteria can infect tomato plants at any stage of growth, leading to small, dark spots on leaves, fruits, and stems. The spots often have a greasy appearance and might be surrounded by a yellow halo. The bacteria thrive in warm, wet conditions, and they can spread rapidly through rain splash, overhead irrigation, and handling of wet plants. The disease is particularly troublesome because it can reduce the yield and quality of the tomatoes, making them unsuitable for sale or consumption. Bacterial spot can be challenging to manage once it establishes in a field or garden because the bacteria can also survive on plant debris and seeds, making it a recurring problem.",
+                    solution:"To deal with tomato bacterial spot, it's important to start with prevention. Use disease-free seeds or plants and consider varieties that are resistant to bacterial spot if they're available. Good garden hygiene helps a lot; remove and destroy any infected plants and clean up plant debris at the end of the growing season to reduce the bacteria's chances of survival. Water the plants at the soil level instead of from above to avoid splashing, which can spread the bacteria. Giving plants enough space to ensure good air circulation helps keep the leaves dry and less hospitable to the disease. If bacterial spot is a persistent problem, applying copper-based fungicides as a preventive measure can help, but it's crucial to follow the product instructions carefully to avoid harming the plants.",
+                },
+
+                "Tomato early blight":{
+                    cause: "Tomato early blight is caused by a fungus called Alternaria solani. This fungus attacks the leaves, stems, and fruits of tomato plants, creating dark, circular spots that have concentric rings, resembling a bull's-eye. The disease typically starts on the lower leaves of the plant and can move upward, especially in warm, wet, or humid conditions, which favor the fungus's growth and spread. Early blight can weaken plants by reducing their photosynthetic capacity and, if severe, can significantly affect fruit yield and quality. The fungus can survive in the soil and on plant debris, making it a recurring problem for gardeners and farmers.",
+                    solution:"To manage tomato early blight effectively, it's crucial to combine preventative measures with direct interventions. Begin with resistant varieties when available, as they're less likely to succumb to the disease. Implement crop rotation to avoid planting tomatoes or related plants in the same spot for at least two to three years, which helps reduce the fungal spores in the soil. Mulching with straw or plastic can prevent the spores from splashing up from the soil onto the plants. Ensure good air circulation by spacing plants properly and staking them to keep leaves off the ground. Regularly remove and destroy infected leaves and plant debris to limit the spread. For watering, use drip irrigation or water at the base to keep the foliage dry, reducing the conducive conditions for fungal growth. If necessary, fungicides can be applied at the first sign of the disease or as a preventive measure during humid weather, always following the label instructions for safe and effective use.",
+                },
+
+                 "Tomato late blight":{
+                    cause: "Tomato late blight is caused by a microorganism called Phytophthora infestans, which is not actually a fungus, though it behaves similarly. This disease is notorious for attacking tomato plants quickly and severely, often resulting in the loss of the plant. It creates dark, soggy spots on the leaves, stems, and fruit, which can rapidly enlarge and destroy the plant. Late blight thrives in cool, wet weather and can spread fast through a garden or field, especially when conditions are humid or rainy. The microorganism can travel through the air and infect plants over a wide area, making it a challenge to control once an outbreak occurs.",
+                    solution:"To fight tomato late blight, start by choosing plant varieties that are resistant to the disease if you can find them. Since the disease loves moisture, try to water your plants in a way that keeps the leaves as dry as possible, like using drip irrigation or watering at the base of the plant early in the day. This gives any water that gets on the plants a chance to dry out. Good air flow around your plants is important too, so make sure they're not too crowded. Removing any infected plants or parts of plants right away can help stop the disease from spreading. Since late blight can be tough to beat once it shows up, using fungicides at the first sign of the disease might help protect your plants. Always follow the directions on the label carefully if you use chemicals. Finally, cleaning up all plant debris at the end of the season is a good practice to reduce the chances of the disease coming back next year.",
+                },
+
+                 "Tomato leaf mold": {
+                    cause: "Tomato leaf mold is caused by a fungus called Passalora fulva. It appears mostly in environments with high humidity and moderate temperatures, making greenhouses a common place for outbreaks. The fungus creates pale green or yellow spots on the tops of leaves and a velvety, olive-green to brown mold on the undersides. If left unchecked, it can lead to leaf drop, reduced fruit quality, and lower yields. The disease spreads through spores, which can be carried by air, water, or contaminated tools and hands.",
+                    solution: "To manage tomato leaf mold, start by ensuring good air circulation around your plants, which can be achieved by spacing them properly and pruning any unnecessary leaves. Avoid overhead watering to keep the leaves dry and water at the base of the plants instead. If you’re growing tomatoes in a greenhouse, use ventilation and dehumidifiers to reduce humidity levels. Removing and destroying infected leaves and plants can help prevent the spread of the fungus. For severe cases, applying fungicides according to label instructions may be necessary. It's also beneficial to practice crop rotation and clean up plant debris at the end of the growing season to reduce the risk of future infections.",
+                },
+
+                "Tomato septoria leaf spot": {
+                    cause: "Septoria leaf spot is caused by the fungus Septoria lycopersici. This fungus thrives in warm, moist environments and can be spread through water splash, infected plant debris, and tools. It initially infects lower leaves and can spread upward through the plant. The disease is more likely to occur in areas with frequent rain or irrigation, and it can persist in plant debris left in the garden.",
+                    solution: "To manage Septoria leaf spot, start by removing and destroying infected leaves and plant debris to reduce the spread of spores. Improve air circulation around plants by spacing them adequately and staking them. Use mulch to prevent soil from splashing onto leaves, which reduces infection chances. Practice crop rotation, avoiding planting tomatoes or related plants in the same location for at least three years. Applying fungicides may also be necessary, especially during wet weather conditions. Choose resistant tomato varieties when available."
+                },
+
+               "Tomato spider mitest Two spotted spider mite": {
+                    cause: "Two-spotted spider mites, Tetranychus urticae, are tiny spider-like pests that affect tomato plants among others. They cause damage by piercing plant cells and sucking out their contents, which leads to speckled discoloration, yellowing, or bronzing of leaves, and can severely weaken or kill plants. These mites thrive in hot, dry conditions and can rapidly reproduce in such environments, becoming a significant issue in greenhouses and gardens during warm weather.",
+                    solution: "To manage two-spotted spider mites, start with regular monitoring of plants for early detection. Introducing natural predators like ladybugs, lacewings, or predatory mites can help control their population. Rinse plants with water to physically remove mites and their webs, or use insecticidal soaps or oils such as neem oil, which are effective against mites but less harmful to beneficial insects. Avoid over-fertilizing, as high nitrogen levels can promote rapid mite population growth. In severe cases, miticides may be necessary, but they should be used as a last resort and carefully selected to avoid harming beneficial insects."
+                },
+
+
+                "Tomato yellow leaf curl virus": {
+                        cause: "Tomato yellow leaf curl virus (TYLCV) is a plant virus transmitted by whiteflies, specifically the silverleaf whitefly (Bemisia tabaci). This virus causes tomato plants to develop yellowing leaves, stunted growth, and severely curled leaves, leading to reduced yields or even plant death. TYLCV is prevalent in warm climates where whiteflies thrive. The virus can spread rapidly as infected whiteflies feed on tomato plants, moving from one plant to another and transmitting the virus.",
+                        solution: "Managing Tomato yellow leaf curl virus involves several strategies aimed at controlling whitefly populations and preventing virus transmission. Implement physical barriers such as insect netting to protect plants from whiteflies. Remove and destroy infected plants to reduce virus sources. Use reflective mulches to deter whiteflies from settling on plants. Encourage or introduce natural predators of whiteflies, such as ladybugs and lacewings. Chemical controls, like insecticides, can be used, but they should be applied judiciously to avoid harming beneficial insects and to prevent whitefly resistance. Planting TYLCV-resistant tomato varieties when available is also an effective preventative measure."
+                    }
+            };
+
+            const prediction = "{{ prediction}}";
+            const detail1 = document.getElementById('detail1');
+            const detail2 = document.getElementById('detail2');
+
+            if (prediction.toLowerCase() === 'healthy') {
+                document.getElementById('labelIcon').innerHTML = '<i class="fas fa-seedling"></i>Plant Status:';
+                document.getElementById('diseaseName').innerHTML = '<strong>Healthy</strong>';
+                detail1.classList.add('healthy-bg');
+                detail2.classList.add('healthy-bg');
+                detail1.innerHTML = '<h2><i class="fas fa-check-circle"></i>Why it happens:</h2><p>Your plants are incredibly healthy. They\'re thriving in the environment you\'ve created for them. They\'re not just surviving; they\'re doing exceptionally well. They\'re growing strong, their leaves are lush and colorful, and they\'re full of life—all thanks to your care and attention. The fact that they\'re free from diseases or pests shows how well you\'ve looked after them. Your plants have everything they need to grow to their fullest potential</p>';
+                detail2.innerHTML = '<h2><i class="fas fa-check-circle"></i>What you can do:</h2><p>To keep your plants healthy, keep doing what you\'re doing. Make sure they\'re getting just the right amount of water—they don\'t like being too dry or too wet. Give them some plant food to keep them nourished and happy. And don\'t forget about sunlight! Your plants love soaking up the sun\'s rays. Keep an eye on them, and if you notice any problems, take care of them right away. Your dedication to your plants is what keeps them thriving.</p>';
+            } else {
+                document.getElementById('labelIcon').innerHTML = '<i class="fas fa-bug"></i>Disease Detected:';
+                document.getElementById('diseaseName').textContent = prediction;
+                detail1.classList.add('disease-bg');
+                detail2.classList.add('disease-bg');
+                detail1.innerHTML = '<h2><i class="fas fa-question-circle"></i>Why it happens:</h2><p>' + (diseasesInfo[prediction]?.cause || "Information not available.") + '</p>';
+                detail2.innerHTML = '<h2><i class="fas fa-shield-alt"></i>What you can do:</h2><p>' + (diseasesInfo[prediction]?.solution || "Consult a professional for detailed guidance.") + '</p>';
+            }
+        </script>
+
+        </body>
+        </html>
+
