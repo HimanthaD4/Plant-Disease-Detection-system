@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Identification System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(to right, #028C7F, #026959);
+            color: #fff;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .nav li {
+            margin: 0 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .nav a:hover {
+            color: #044d50;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 60px;
+            margin: 20px;
+            width: 90%;
+
+            max-width: 800px;
+        }
+        .card-title {
+            color: #026959;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .card-content {
+            font-size: 18px;
+            line-height: 1.6;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .footer {
+            padding: 12px;
+            background-color: #028C7F;
+            color: white;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            .nav li {
+                margin: 0 16px;
+            }
+            .nav a {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <ul class="nav">
+            <li><a href="{{ url_for('upload_file') }}" style="font-size: large; font-family: 'Roboto', sans-serif;">Home</a></li>
+            <li><a href="{{ url_for('about_us') }}" style="font-size: large; font-family: 'Roboto', sans-serif;">About Us</a></li>
+            <li><a href="{{ url_for('vision') }}" style="font-size: large; font-family: 'Roboto', sans-serif;">Our Vision</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title"  style="color: #414040">About Plant Disease Identification System</h1>
+            <p class="card-content" style="text-align: center; color: #6e6d6d">
+                We are dedicated to developing an innovative platform for identifying plant diseases. Our mission is to assist farmers in protecting their crops and improving agricultural productivity. Through continuous research and development, we strive to make a positive impact on the agriculture industry and contribute to global food security.
+            </p>
+             <h1 class="card-title" style="color: #414040; margin-top: 50px">Our Team</h1>
+            <p class="card-content" style="text-align: center; color: #6e6d6d">
+                Our team consists of experienced professionals in agriculture, technology, and data science. Together, we work tirelessly to create cutting-edge solutions that address the challenges faced by farmers worldwide. With a passion for innovation and a commitment to excellence, we aim to empower farmers and revolutionize the future of agriculture.
+            </p>
+        </div>
+
+
+    </div>
+
+     <div class="footer" style="display: flex; align-items: center; justify-content: center; height: 40px;">
+    <p style="margin: 0; font-size: 14px; font-size: bolder">&copy; Healthy Goods Plant Disease Identification System</p>
+</div>>
+</body>
+</html>
